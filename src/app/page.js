@@ -1,95 +1,170 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import React, { useState } from "react";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import Products from "./Products";
+import Checkout from "./Checkout";
+import Register from "./Register";
+import Login from "./Login";
+import ManagerPage from "./ManagerPage";
+import CustomerPage from "./CustomerPage";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [page, setPage] = useState("home");
+  const [cart, setCart] = useState([]);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleAddToCart = (product) => {
+    setCart((prevCart) => [...prevCart, product]);
+  };
+
+  const renderPage = () => {
+    switch (page) {
+      case "products":
+        return <Products onAddToCart={handleAddToCart} />;
+      case "checkout":
+        return <Checkout cart={cart} />;
+      case "register":
+        return <Register />;
+      case "login":
+        return <Login setPage={setPage} />;
+      case "manager":
+        return <ManagerPage />;
+      case "customer":
+        return <CustomerPage />;
+      default:
+        return (
+          <Box
+            sx={{
+              textAlign: "center",
+              mt: "64px",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              backgroundColor: "#fff8e1", // Light cream background for warmth
+              padding: "2rem",
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{ color: "#d32f2f", fontWeight: "bold" }}
+            >
+              Welcome to Krispy Kreme
+            </Typography>
+            <Typography
+              variant="body1"
+              gutterBottom
+              sx={{ color: "#5d4037", fontSize: "1.2rem" }}
+            >
+              Your favorite donuts, now online! Enjoy our delicious treats and
+              shop with ease.
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{
+                  padding: "1rem 2rem",
+                  fontSize: "1rem",
+                  borderRadius: "50px",
+                  backgroundColor: "#4caf50", // Green button
+                  "&:hover": { backgroundColor: "#388e3c" },
+                }}
+                onClick={() => setPage("register")}
+              >
+                Register
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  padding: "1rem 2rem",
+                  fontSize: "1rem",
+                  borderRadius: "50px",
+                  backgroundColor: "#1976d2", // Blue button
+                  "&:hover": { backgroundColor: "#1565c0" },
+                }}
+                onClick={() => setPage("login")}
+              >
+                Login
+              </Button>
+            </Box>
+          </Box>
+        );
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#fce4ec", // Light pink background for the whole app
+      }}
+    >
+      {/* AppBar */}
+      <AppBar position="fixed" sx={{ backgroundColor: "#d32f2f" }}>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+            Krispy Kreme
+          </Typography>
+          <Box>
+            <Button
+              color="inherit"
+              onClick={() => setPage("home")}
+              sx={{ fontWeight: "bold" }}
+            >
+              Home
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => setPage("products")}
+              sx={{ fontWeight: "bold" }}
+            >
+              Products
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => setPage("checkout")}
+              sx={{ fontWeight: "bold" }}
+            >
+              Checkout
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => setPage("register")}
+              sx={{ fontWeight: "bold" }}
+            >
+              Register
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => setPage("login")}
+              sx={{ fontWeight: "bold" }}
+            >
+              Login
+            </Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* Render Page Content */}
+      <Box sx={{ mt: "64px", flex: 1 }}>{renderPage()}</Box>
+    </Box>
   );
 }
