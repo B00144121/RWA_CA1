@@ -1,9 +1,7 @@
 import React from "react";
 import { Box, Typography, Grid, Card, CardContent, CardMedia, Button } from "@mui/material";
 
-import Glazed from "../app/Images/download.jfif";
-
-export default function Products() {
+export default function Products({ onAddToCart }) {
   // Updated products array with 6 options
   const products = [
     { name: "Glazed Donut", description: "A tasty treat for any occasion.", price: 1.99, image: "https://via.placeholder.com/150" },
@@ -61,7 +59,7 @@ export default function Products() {
                   variant="contained"
                   color="success"
                   sx={{ mt: 2 }}
-                  onClick={() => console.log(`Added ${product.name} to cart`)} // Replace with your cart logic
+                  onClick={() => onAddToCart(product)} // Add to cart functionality
                 >
                   Add to Cart
                 </Button>

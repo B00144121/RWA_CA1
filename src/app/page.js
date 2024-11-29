@@ -8,21 +8,26 @@ import Register from "./Register";
 import Login from "./Login";
 import ManagerPage from "./ManagerPage";
 import CustomerPage from "./CustomerPage";
+import ViewCart from "./ViewCart"; // Import ViewCart
 
 export default function Home() {
   const [page, setPage] = useState("home");
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState([]); // State to track cart items
 
+  // Function to handle adding a product to the cart
   const handleAddToCart = (product) => {
     setCart((prevCart) => [...prevCart, product]);
   };
 
+  // Function to render pages based on state
   const renderPage = () => {
     switch (page) {
       case "products":
-        return <Products onAddToCart={handleAddToCart} />;
+        return <Products onAddToCart={handleAddToCart} />; // Pass add-to-cart handler
+      case "viewCart":
+        return <ViewCart cart={cart} setPage={setPage} />; // Pass cart and navigation handler
       case "checkout":
-        return <Checkout cart={cart} />;
+        return <Checkout cart={cart} />; // Pass cart to checkout
       case "register":
         return <Register />;
       case "login":
@@ -137,6 +142,13 @@ export default function Home() {
               sx={{ fontWeight: "bold" }}
             >
               Products
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => setPage("viewCart")}
+              sx={{ fontWeight: "bold" }}
+            >
+              View Cart ({cart.length}) {/* Display cart item count */}
             </Button>
             <Button
               color="inherit"
