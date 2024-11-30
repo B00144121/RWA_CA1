@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Typography, List, ListItem, ListItemText, Divider } from "@mui/material";
 
 export default function ManagerPage() {
-  // Hardcoded products and orders
+  // products and orders
   const [products] = useState([
     { name: "Glazed Donut", price: 1.99 },
     { name: "Chocolate Donut", price: 2.49 },
@@ -15,7 +15,7 @@ export default function ManagerPage() {
   const [orders] = useState([
     {
       orderId: 1,
-      customer: "Alice",
+      customer: "fuad",
       items: [
         { name: "Glazed Donut", price: 1.99 },
         { name: "Chocolate Donut", price: 2.49 },
@@ -23,7 +23,7 @@ export default function ManagerPage() {
     },
     {
       orderId: 2,
-      customer: "Bob",
+      customer: "jenna",
       items: [
         { name: "Strawberry Donut", price: 2.29 },
         { name: "Maple Donut", price: 2.89 },

@@ -23,7 +23,7 @@ mongoose.connect('mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?re
 // Configure sessions
 app.use(
   session({
-    secret: 'mysecretkey', // Use a strong secret in production
+    secret: 'mysecretkey', // secret in production
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -110,7 +110,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ADD THE /api/check-session ROUTE HERE
+//api/check-session ROUTE HERE
 app.get('/api/check-session', (req, res) => {
   if (req.session.user) {
     res.status(200).json({ message: 'Session is active', user: req.session.user });
