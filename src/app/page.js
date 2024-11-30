@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import Products from "./Products";
-import Checkout from "./Checkout";
-import Register from "./Register";
-import Login from "./Login";
+import Products from "./products";
+import Checkout from "./checkout";
+import Register from "./register";
+import Login from "./login";
 import ManagerPage from "./ManagerPage";
 import CustomerPage from "./CustomerPage";
-import ViewCart from "./ViewCart"; // Import ViewCart
+import ViewCart from "./viewCart"; // Import ViewCart
 
 export default function Home() {
   const [page, setPage] = useState("home");
