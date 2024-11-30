@@ -8,7 +8,7 @@ import Register from "./register";
 import Login from "./login";
 import ManagerPage from "./ManagerPage";
 import CustomerPage from "./CustomerPage";
-import ViewCart from "./viewCart"; // Import ViewCart
+import ViewCart from "./viewcart"; // Import ViewCart
 
 export default function Home() {
   const [page, setPage] = useState("home");
