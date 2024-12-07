@@ -32,7 +32,7 @@ export default function ViewCart({ cart, setPage }) {
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
-            onClick={() => setPage("checkout")}
+            onClick={() => setPage("checkout")} // Navigate to the Checkout page using setPage
           >
             Proceed to Checkout
           </Button>

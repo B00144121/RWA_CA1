@@ -13,17 +13,18 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?retryWrites=true&w=majority&appName=Krispy-Kreme', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose
+  .connect('mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?retryWrites=true&w=majority&appName=Krispy-Kreme', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // Configure sessions
 app.use(
   session({
-    secret: 'mysecretkey', // secret in production
+    secret: 'mysecretkey', // Replace with a strong secret in production
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -43,7 +44,68 @@ const userSchema = new mongoose.Schema({
   role: String, // Add a role field ('customer' or 'manager')
 });
 
+const productSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  price: Number,
+  image: String,
+});
+
+const purchaseSchema = new mongoose.Schema({
+  userId: mongoose.Schema.Types.ObjectId, // Link purchase to a user
+  items: [
+    {
+      productId: mongoose.Schema.Types.ObjectId,
+      quantity: Number,
+    },
+  ],
+  total: Number,
+  date: { type: Date, default: Date.now },
+});
+
+// Create models
 const User = mongoose.model('User', userSchema);
+const Product = mongoose.model('Product', productSchema);
+const Purchase = mongoose.model('Purchase', purchaseSchema);
+
+// POST route to save a purchase
+app.post('/api/purchase', async (req, res) => {
+  try {
+    // Retrieve userId from the session
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const { cart } = req.body;
+
+    if (!cart || cart.length === 0) {
+      return res.status(400).json({ error: 'Cart is empty' });
+    }
+
+    // Calculate the total price
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+    // Prepare the purchase data
+    const purchase = new Purchase({
+      userId,
+      items: cart.map((item) => ({
+        productId: item._id,
+        quantity: 1, // Assuming quantity is 1 for now
+      })),
+      total,
+    });
+
+    // Save purchase to the database
+    await purchase.save();
+
+    res.status(201).json({ message: 'Purchase saved successfully', purchase });
+  } catch (err) {
+    console.error('Error saving purchase:', err);
+    res.status(500).json({ error: 'Failed to save purchase', details: err.message });
+  }
+});
 
 // Existing routes
 // POST route to register a user
@@ -77,6 +139,7 @@ app.post('/api/user', async (req, res) => {
       user: { name, email: emailLowerCase },
     });
   } catch (err) {
+    console.error('Error during user registration:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -106,11 +169,12 @@ app.post('/api/login', async (req, res) => {
 
     res.status(200).json({ message: 'Logged in successfully', role: user.role });
   } catch (err) {
+    console.error('Error during login:', err);
     res.status(500).json({ error: 'An error occurred during login.' });
   }
 });
 
-//api/check-session ROUTE HERE
+// Check session route
 app.get('/api/check-session', (req, res) => {
   if (req.session.user) {
     res.status(200).json({ message: 'Session is active', user: req.session.user });
