@@ -1,23 +1,22 @@
-import React from "react";
-import { Box, Typography, List, ListItem, ListItemText, Button } from "@mui/material";
-import axios from "axios";
+import React from 'react';
+import { Box, Typography, List, ListItem, ListItemText, Button } from '@mui/material';
+import axios from 'axios';
 
 export default function Checkout({ cart }) {
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+    return cart.reduce((total, item) => total + item.price * (item.quantity || 1), 0).toFixed(2);
   };
 
   const handlePurchase = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/api/purchase", {
-        cart, // Only send the cart data
-      });
-      alert(response.data.message); // Show success message
+      const response = await fetch('http://localhost:3001/api/purchase', { cart });
+      alert('Purchase saved successfully!');
+      console.log(response.data);
     } catch (error) {
-      alert("Error processing purchase: " + error.response?.data?.error || error.message);
+      console.error('Error during purchase:', error);
+      alert('Failed to save purchase. Please try again.');
     }
   };
-
 
   return (
     <Box sx={{ p: 4 }}>
@@ -33,7 +32,7 @@ export default function Checkout({ cart }) {
               <ListItem key={index}>
                 <ListItemText
                   primary={item.name}
-                  secondary={`$${item.price.toFixed(2)}`}
+                  secondary={`$${item.price.toFixed(2)} x ${item.quantity || 1}`}
                 />
               </ListItem>
             ))}
@@ -54,4 +53,3 @@ export default function Checkout({ cart }) {
     </Box>
   );
 }
-
