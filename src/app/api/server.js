@@ -10,7 +10,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: 'https://rwa-ca-1-z3zg-nqeh5md9j-b00144121s-projects.vercel.app/', // Frontend URL
+    origin: 'https://rwa-ca-1-z3zg-nqeh5md9j-b00144121s-projects.vercel.app', // Frontend URL
     credentials: true, // Allow cookies
   })
 );
