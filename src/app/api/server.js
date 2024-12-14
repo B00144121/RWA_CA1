@@ -10,7 +10,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: 'http://localhost:3000', // Frontend URL
+    origin: 'https://rwa-ca-1-sxyn.vercel.app/', // Frontend URL
     credentials: true, // Allow cookies
   })
 );
@@ -35,6 +35,9 @@ app.use(
       mongoUrl: 'mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?retryWrites=true&w=majority&appName=Krispy-Kreme',
     }),
     cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
