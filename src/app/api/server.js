@@ -35,6 +35,18 @@ app.use(
       mongoUrl: 'mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?retryWrites=true&w=majority&appName=Krispy-Kreme',
     }),
     cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 1000 * 60 * 60 * 24,
+
+
+    },
+
+    })
+    ;
+
+
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
