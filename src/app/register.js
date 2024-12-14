@@ -14,7 +14,7 @@ export default function Register() {
     };
 
     try {
-      const response = await fetch("https://rwa-ca-1-z3zg-nqeh5md9j-b00144121s-projects.vercel.app/api/user", {
+      const response = await fetch("http://localhost:3001/api/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
