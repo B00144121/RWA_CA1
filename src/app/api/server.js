@@ -8,9 +8,20 @@ const MongoStore = require('connect-mongo');
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'https://rwa-ca-1-z3zg-nqeh5md9j-b00144121s-projects.vercel.app', // Vercel frontend URL
+  'http://localhost:3000', // Local development frontend
+];
+
 app.use(
   cors({
-    origin: 'https://rwa-ca-1-z3zg-nqeh5md9j-b00144121s-projects.vercel.app', // Frontend URL
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true, // Allow cookies
   })
 );
@@ -18,7 +29,7 @@ app.use(express.json());
 
 // MongoDB connection
 mongoose
-  .connect('mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?retryWrites=true&w=majority&appName=Krispy-Kreme', {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -28,25 +39,16 @@ mongoose
 // Session setup
 app.use(
   session({
-    secret: 'mysecretkey', // Replace with a strong secret in production
+    secret: process.env.SESSION_SECRET || 'mysecretkey', // Use environment variable in production
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: 'mongodb+srv://user:passcode@krispy-kreme.8z9g4.mongodb.net/?retryWrites=true&w=majority&appName=Krispy-Kreme',
+      mongoUrl: process.env.MONGO_URI,
     }),
     cookie: {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24,
-
-
-    },
-
-    })
-    ;
-
-
+      httpOnly: true, // Prevent JavaScript access to cookies
+      secure: process.env.NODE_ENV === 'production', // Only send cookies over HTTPS in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Cross-origin cookies in production
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
@@ -78,6 +80,9 @@ const purchaseSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const Purchase = mongoose.model('Purchase', purchaseSchema);
 
+// Routes
+
+// User Registration
 app.post('/api/user', async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -99,7 +104,7 @@ app.post('/api/user', async (req, res) => {
       name,
       email: emailLowerCase,
       password: hashedPassword,
-      role, // Assign role to the user
+      role,
     });
     await newUser.save();
 
@@ -113,9 +118,6 @@ app.post('/api/user', async (req, res) => {
   }
 });
 
-
-
-// Routes
 // User Login
 app.post('/api/user/login', async (req, res) => {
   const { email, password } = req.body;
@@ -136,7 +138,7 @@ app.post('/api/user/login', async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role || 'customer', // Default role is 'customer'
+      role: user.role || 'customer',
     };
 
     await req.session.save(); // Save session explicitly
@@ -153,14 +155,12 @@ app.post('/api/user/login', async (req, res) => {
   }
 });
 
-
-
 // Purchase Route
 app.post('/api/purchase', async (req, res) => {
   try {
     const { cart } = req.body;
 
-    // Get user ID from session (or use a guest user fallback)
+    // Get user ID from session
     const userId = req.session?.user?.id || null;
 
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
@@ -192,5 +192,5 @@ app.post('/api/purchase', async (req, res) => {
 });
 
 // Start the server
-const PORT = 3001; // Set your desired port here
+const PORT = process.env.PORT || 3001; // Use dynamic port for deployment
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
