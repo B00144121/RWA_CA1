@@ -21,7 +21,7 @@ export default function Login({ setPage }) {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch("https://rwa-ca-1-sxyn.vercel.app/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,9 +34,9 @@ export default function Login({ setPage }) {
         setSuccess("Logged in successfully!");
 
         // Redirect based on role
-        if (data.role === "manager") {
+        if (data.user.role === "manager") {
           setPage("manager");
-        } else if (data.role === "customer") {
+        } else {
           setPage("customer");
         }
       } else {
@@ -44,6 +44,7 @@ export default function Login({ setPage }) {
         setError(errorData.error || "Login failed. Please try again.");
       }
     } catch (error) {
+      console.error("Error during login:", error);
       setError("Something went wrong. Please try again.");
     }
   };

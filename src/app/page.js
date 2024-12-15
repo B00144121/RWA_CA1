@@ -23,11 +23,11 @@ export default function Home() {
   const renderPage = () => {
     switch (page) {
       case "products":
-        return <Products onAddToCart={handleAddToCart} />; // Pass add-to-cart handler
+        return <Products onAddToCart={handleAddToCart} />;
       case "viewCart":
-        return <ViewCart cart={cart} setPage={setPage} />; // Pass cart and navigation handler
+        return <ViewCart cart={cart} setPage={setPage} />;
       case "checkout":
-        return <Checkout cart={cart} />; // Pass cart to checkout
+        return <Checkout cart={cart} />;
       case "register":
         return <Register />;
       case "login":

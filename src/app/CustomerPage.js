@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Grid, Card, CardContent, CardMedia, Button } from "@mui/material";
 
 export default function CustomerPage() {
+  const [weather, setWeather] = useState(null); // State to store weather data
+
+  // Fetch weather data on page load
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/getWeather");
+        const data = await response.json();
+        setWeather(data); // Set weather data to state
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
+
+    fetchWeather();
+  }, []);
+
   // Updated products array with 6 options
   const products = [
     { name: "Glazed Donut", description: "A tasty treat for any occasion.", price: 1.99, image: "https://via.placeholder.com/150" },
@@ -27,6 +44,12 @@ export default function CustomerPage() {
       <Typography variant="h3" gutterBottom sx={{ color: "#d32f2f" }}>
         Welcome, Customer!
       </Typography>
+
+      {/* Display today's temperature */}
+      <Typography variant="h6" gutterBottom>
+        Today's Temperature: {weather ? `${weather.temp}°C` : "Loading..."}
+      </Typography>
+
       <Typography variant="body1" color="text.secondary" gutterBottom>
         Browse our delicious selection of donuts.
       </Typography>

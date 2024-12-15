@@ -14,7 +14,7 @@ export default function Register() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/user", {
+      const response = await fetch("https://rwa-ca-1-sxyn.vercel.app/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
